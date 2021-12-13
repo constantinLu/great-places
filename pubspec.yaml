@@ -36,6 +36,8 @@ dependencies:
   cupertino_icons: ^1.0.2
   provider: ^6.0.1
   image_picker: ^0.8.4+4
+  path_provider: ^2.0.8
+  path: ^1.8.0
 
 dev_dependencies:
   flutter_test:
