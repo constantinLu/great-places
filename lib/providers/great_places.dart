@@ -8,16 +8,11 @@ class GreatPlaces with ChangeNotifier {
   List<Place> _items = [];
 
   List<Place> get items {
-    return [...items]; // a copy of the items
+    return [..._items]; // a copy of the items
   }
 
-  void addPlace(
-    String pickedTitle,
-    File pickedImage,
-  ) {
-    final newPlace = Place(
-      id: DateTime.now().toString(),
-      image: pickedImage,
+  void addPlace(String pickedTitle, File pickedImage) {
+    final newPlace = Place(id: DateTime.now().toString(), image: pickedImage,
       title: pickedTitle,
     );
     _items.add(newPlace);
