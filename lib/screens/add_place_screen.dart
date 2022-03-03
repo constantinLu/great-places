@@ -30,7 +30,7 @@ class _AddPlacesScreenState extends State<AddPlacesScreen> {
       return;
     }
     Provider.of<GreatPlaces>(context, listen: false).addPlace(_titleController.text, _pickedImage!);
-    print("Porvider triggered");
+    print("Provider triggered");
     //Navigator.of(context).pop(); //POP NOT FUKING WORKING HERE
     Navigator.of(context).popAndPushNamed(PlacesListScreen.PLACES_LIST_SCREEN);
   }
