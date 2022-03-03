@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:great_places/helpers/location_helper.dart';
+import 'package:great_places/screens/map_screen.dart';
 import 'package:location/location.dart';
 
 class LocationInput extends StatefulWidget {
@@ -10,15 +11,32 @@ class LocationInput extends StatefulWidget {
 }
 
 class _LocationInputState extends State<LocationInput> {
-
   String? _previewImageUrl;
 
   Future<void> _getCurrentUserLocation() async {
     final locData = await Location().getLocation();
-    final staticMapImageUrl = LocationHelper.generateLocationPreviewImage(locData.latitude, locData.longitude);
+    final staticMapImageUrl =
+        LocationHelper.generateLocationPreviewImage(locData.latitude, locData.longitude);
     setState(() {
-      _previewImageUrl =staticMapImageUrl;
+      _previewImageUrl = staticMapImageUrl;
     });
+  }
+
+  Future<void> _selectOnMap() async {
+    final selectedLocation = await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (ctx) => MapScreen(
+          isSelecting: true,
+        ),
+      ),
+    );
+
+    if (selectedLocation == null) {
+      return;
+
+    } else {
+      //use that location
+    }
   }
 
   @override
@@ -39,13 +57,13 @@ class _LocationInputState extends State<LocationInput> {
       ),
       Row(mainAxisAlignment: MainAxisAlignment.center, children: [
         TextButton.icon(
-          icon: const Icon(Icons.location_on),
-          label: const Text('Select on map'),
-          style: TextButton.styleFrom(primary: Theme.of(context).primaryColor),
-          onPressed: _getCurrentUserLocation //JUST POINT AT THE METHOD,
-        ),
+            icon: const Icon(Icons.location_on),
+            label: const Text('Select on map'),
+            style: TextButton.styleFrom(primary: Theme.of(context).primaryColor),
+            onPressed: _getCurrentUserLocation //JUST POINT AT THE METHOD,
+            ),
         TextButton.icon(
-            onPressed: () {},
+            onPressed: _selectOnMap,
             icon: const Icon(Icons.map_rounded),
             label: const Text('Location'),
             style: TextButton.styleFrom(primary: Theme.of(context).primaryColor))
