@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:great_places/models/place.dart';
 import 'package:great_places/providers/great_places.dart';
 import 'package:great_places/screens/places_list_screen.dart';
 import 'package:great_places/widgets/image_input.dart';
@@ -20,19 +21,24 @@ class AddPlacesScreen extends StatefulWidget {
 class _AddPlacesScreenState extends State<AddPlacesScreen> {
   final _titleController = TextEditingController();
   File? _pickedImage;
+  PlaceLocation? _pickedLocation;
 
   void _selectImage(File pickedImage) {
     _pickedImage = pickedImage;
   }
 
   void _savePlace() {
-    if (_titleController.text.isEmpty || _pickedImage == null) {
+    if (_titleController.text.isEmpty || _pickedImage == null || _pickedLocation == null) {
       return;
     }
-    Provider.of<GreatPlaces>(context, listen: false).addPlace(_titleController.text, _pickedImage!);
-    print("Provider triggered");
-    //Navigator.of(context).pop(); //POP NOT FUKING WORKING HERE
+    Provider.of<GreatPlaces>(context, listen: false).addPlace(_titleController.text, _pickedImage!, _pickedLocation!);
+   //print("Provider triggered");
+    //Navigator.of(context).pop(); //POP NOT FUCKING WORKING HERE
     Navigator.of(context).popAndPushNamed(PlacesListScreen.PLACES_LIST_SCREEN);
+  }
+
+  void _selectPlace(double lat, double long) {
+    _pickedLocation = PlaceLocation(latitude: lat, longitude: long);
   }
 
   @override
@@ -61,7 +67,7 @@ class _AddPlacesScreenState extends State<AddPlacesScreen> {
                     const SizedBox(
                       height: 10,
                     ),
-                    LocationInput(),
+                    LocationInput(_selectPlace),
                   ],
                 ),
               ),

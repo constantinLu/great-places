@@ -5,7 +5,9 @@ import 'package:great_places/screens/map_screen.dart';
 import 'package:location/location.dart';
 
 class LocationInput extends StatefulWidget {
-  const LocationInput({Key? key}) : super(key: key);
+  final Function onSelectPlace;
+
+  LocationInput(this.onSelectPlace);
 
   @override
   _LocationInputState createState() => _LocationInputState();
@@ -14,16 +16,27 @@ class LocationInput extends StatefulWidget {
 class _LocationInputState extends State<LocationInput> {
   String? _previewImageUrl;
 
-  Future<void> _getCurrentUserLocation() async {
-    final locData = await Location().getLocation();
-    final staticMapImageUrl =
-        LocationHelper.generateLocationPreviewImage(locData.latitude, locData.longitude);
+  void _showPreview(double lat, double long) {
+    final staticMapImageUrl = LocationHelper.generateLocationPreviewImage(lat, long);
     setState(() {
       _previewImageUrl = staticMapImageUrl;
     });
   }
 
-  Future<void> _selectOnMap() async { //returng the latLong data from map_screen
+  Future<void> _getCurrentUserLocation() async {
+    final locData;
+    try {
+      final locData = await Location().getLocation();
+      _showPreview(locData.latitude!, locData.longitude!);
+      widget.onSelectPlace(locData.latitude, locData.longitude);
+    } catch (error) {
+      print("ERROR GETTING LOCATION");
+      return;
+    }
+  }
+
+  Future<void> _selectOnMap() async {
+    //returning the latLong data from map_screen
     final selectedLocation = await Navigator.of(context).push<LatLng>(
       MaterialPageRoute(
         builder: (ctx) => MapScreen(
@@ -34,7 +47,8 @@ class _LocationInputState extends State<LocationInput> {
     if (selectedLocation == null) {
       return;
     }
-    print(selectedLocation.latitude);
+    _showPreview(selectedLocation.latitude, selectedLocation.longitude);
+    widget.onSelectPlace(selectedLocation.latitude, selectedLocation.longitude);
   }
 
   @override
@@ -56,14 +70,14 @@ class _LocationInputState extends State<LocationInput> {
       Row(mainAxisAlignment: MainAxisAlignment.center, children: [
         TextButton.icon(
             icon: const Icon(Icons.location_on),
-            label: const Text('Select on map'),
+            label: const Text('Current location'),
             style: TextButton.styleFrom(primary: Theme.of(context).primaryColor),
             onPressed: _getCurrentUserLocation //JUST POINT AT THE METHOD,
             ),
         TextButton.icon(
             onPressed: _selectOnMap,
             icon: const Icon(Icons.map_rounded),
-            label: const Text('Location'),
+            label: const Text('Select on Map'),
             style: TextButton.styleFrom(primary: Theme.of(context).primaryColor))
       ])
     ]);
