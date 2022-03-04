@@ -29,6 +29,15 @@ class _MapScreenState extends State<MapScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Your Map'),
+        actions: [
+          if (widget.isSelecting)
+            IconButton(
+              icon: const Icon(Icons.check),
+              onPressed: _picketLocation == null ? null : () {
+                Navigator.of(context).pop(_picketLocation); // returns some data to the addPlaceScreen (is the pickedLocation)
+              },
+            )
+        ],
       ),
       body: GoogleMap(
         initialCameraPosition: CameraPosition(
